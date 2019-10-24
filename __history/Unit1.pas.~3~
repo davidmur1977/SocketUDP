@@ -1,0 +1,83 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, ScktComp, IdBaseComponent, IdComponent, IdGlobal,
+  IdUDPBase, IdUDPClient;
+
+type
+  TByteArr = array of byte;
+
+  TForm1 = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Edit1: TEdit;
+    Button1: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    Edit2: TEdit;
+    Label3: TLabel;
+    Edit3: TEdit;
+    Memo1: TMemo;
+    IdUDPClient1: TIdUDPClient;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+      IdUDPClient1.Port := StrToInt(Edit1.Text);
+
+      IdUDPClient1.Host := Edit2.Text;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+    ArByte : TByteArr;
+    idx: integer;
+    sl:TStringList;
+    puerto:Word;
+    sIp:String;
+begin
+      try
+          try
+             puerto := 8040;
+             sIp:= '127.0.0.1';
+//             sl := TStringList.Create;
+             IdUDPClient1.Active := True;
+
+//             sl.Delimiter := ',';
+//             sl.DelimitedText := Edit3.Text;
+             IdUDPClient1.Send(Edit3.Text);
+
+             Memo1.Lines.Text := IdUDPClient1.ReceiveString(sIp,puerto);
+//             SetLength(ArByte, sl.Count);
+//             for idx := 0 to sl.Count - 1 do
+//             begin
+//                  ArByte[idx] := StrToInt(sl[idx]);
+//             end;
+            except
+            on E:Exception do
+            begin
+                 ShowMessage('Error de envío: ' + E.Message);
+            end;
+          end;
+      finally
+//        sl.Free;
+      end;
+end;
+
+end.
